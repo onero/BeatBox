@@ -185,3 +185,4 @@ fabric.properties
 *.xml___jb_tmp___
 *.ser
 *.ser
+*.iml___jb_tmp___
