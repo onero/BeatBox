@@ -31,13 +31,14 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
         mBeatBox = new BeatBox(getActivity());
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         FragmentBeatBoxBinding binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_beat_box, container, false);
 
@@ -45,6 +46,12 @@ public class BeatBoxFragment extends Fragment {
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBeatBox.release();
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder {
@@ -65,13 +72,12 @@ public class BeatBoxFragment extends Fragment {
     private class SoundAdapter extends RecyclerView.Adapter<SoundHolder> {
         private List<Sound> mSounds;
 
-        private SoundAdapter(List<Sound> sounds) {
+        public SoundAdapter(List<Sound> sounds) {
             mSounds = sounds;
         }
 
-        @NonNull
         @Override
-        public SoundHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public SoundHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             ListItemSoundBinding binding = DataBindingUtil
                     .inflate(inflater, R.layout.list_item_sound, parent, false);
@@ -79,7 +85,7 @@ public class BeatBoxFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull SoundHolder holder, int position) {
+        public void onBindViewHolder(SoundHolder holder, int position) {
             Sound sound = mSounds.get(position);
             holder.bind(sound);
         }
